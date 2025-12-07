@@ -1,79 +1,32 @@
-# Welcome to React Router!
+# Engineering Driven Portfolio & Startup Platform
 
-A modern, production-ready template for building full-stack React applications using React Router.
+エンジニアリングを核とした「ものづくり起業」のためのプラットフォーム。
+自身のポートフォリオ、技術ブログ、製品紹介、そして将来的なプロダクト販売を一元管理するためのWebアプリケーションです。
 
-## Features
+## 🚀 Concept
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+"Engineering as a Product"
 
-## Getting Started
+単なる情報の羅列ではなく、サイトそのものが自身の技術力と拡張性を示すプロダクトであることを目指しています。
+ベンダーロックインを極力排除し、エッジコンピューティングとコンテナ技術を組み合わせた、スケーラブルかつフルコントロール可能な構成を採用しています。
 
-### Installation
+## 🛠 Tech Stack Overview
 
-Install the dependencies:
+| Category           | Technology                         | Description                                |
+| :----------------- | :--------------------------------- | :----------------------------------------- |
+| **Frontend**       | **React Router v7**                | SSR with Cloudflare Workers runtime        |
+| **Infrastructure** | **Cloudflare Workers/Pages**       | Edge deployment using Workers Functions    |
+| **CMS (Backend)**  | **Payload CMS v3**                 | TypeScript-first, Self-hosted Headless CMS |
+| **Backend Infra**  | **AWS App Runner / GCP Cloud Run** | Containerized hosting for CMS              |
+| **UI / 3D**        | **Tailwind CSS + Shadcn/ui + R3F** | Fully customizable UI & 3D Product View    |
 
-```bash
-npm install
+## 📂 Repository Structure (Monorepo)
+
+```text
+.
+├── apps/
+│   ├── web/        # Frontend (React Router v7 / Cloudflare Pages)
+│   └── cms/        # Backend (Payload CMS / Docker Container)
+├── docs/           # Architecture & Design Documents
+└── package.json
 ```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Previewing the Production Build
-
-Preview the production build locally:
-
-```bash
-npm run preview
-```
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-Deployment is done using the Wrangler CLI.
-
-To build and deploy directly to production:
-
-```sh
-npm run deploy
-```
-
-To deploy a preview URL:
-
-```sh
-npx wrangler versions upload
-```
-
-You can then promote a version to production after verification or roll it out progressively.
-
-```sh
-npx wrangler versions deploy
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
