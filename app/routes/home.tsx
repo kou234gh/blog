@@ -1,3 +1,4 @@
+import { Button } from "~/components/ui/button";
 import type { Route } from "./+types/home";
 import { Link } from "react-router";
 
@@ -24,17 +25,16 @@ export default function Home() {
           エンジニアとしての技術ブログ、ポートフォリオ、製品紹介を掲載する個人サイト
         </p>
         <div className="flex gap-4 justify-center">
-          <Link
-            to="/blog"
-            className="px-8 py-3 bg-gray-900  rounded-lg hover:bg-gray-700 transition-colors font-medium"
-          >
-            ブログを読む
+          <Link to="/blog">
+            <Button variant="default" size="lg">
+              ブログを読む
+            </Button>
           </Link>
-          <Link
-            to="/products"
-            className="px-8 py-3 border border-gray-900  rounded-lg hover:bg-gray-50 transition-colors font-medium"
-          >
-            製品を見る
+
+          <Link to="/products">
+            <Button variant="outline" size="lg">
+              製品を見る
+            </Button>
           </Link>
         </div>
       </section>
@@ -47,25 +47,22 @@ export default function Home() {
             最新の技術スタックと開発プラクティスを共有。React Router
             v7、Cloudflare Workers、Payload CMSなど。
           </p>
-          <Link
-            to="/blog"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            記事一覧を見る →
+
+          <Link to="/blog" className="">
+            <Button variant="outline" size="lg">
+              記事一覧を見る →
+            </Button>
           </Link>
         </div>
 
         <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow">
           <h3 className="text-2xl font-bold mb-3 ">製品紹介</h3>
-          <p className=" mb-4">
-            3Dモデルとインタラクティブなデモで製品を紹介。React Three
-            Fiberを活用した没入型体験。
-          </p>
-          <Link
-            to="/products"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            製品を見る →
+          <p className=" mb-4">...soon</p>
+
+          <Link to="/products">
+            <Button variant="outline" size="lg">
+              製品を見る →
+            </Button>
           </Link>
         </div>
 
@@ -74,11 +71,11 @@ export default function Home() {
           <p className=" mb-4">
             プロジェクトの設計思想、技術選定の理由、そして開発の裏側をドキュメントで公開。
           </p>
-          <Link
-            to="/about"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            詳細を見る →
+
+          <Link to="/about">
+            <Button variant="outline" size="lg">
+              詳細を見る →
+            </Button>
           </Link>
         </div>
       </section>
@@ -123,11 +120,10 @@ export default function Home() {
           学んだ技術を記事にまとめ、作ったものを公開することで、
           より良い収入とキャリアにつなげていくためのサイトです。
         </p>
-        <Link
-          to="/about"
-          className="inline-block px-8 py-3 bg-gray-900  rounded-lg hover:bg-gray-700 transition-colors font-medium"
-        >
-          もっと詳しく
+        <Link to="/about">
+          <Button variant="default" size="lg">
+            もっと詳しく
+          </Button>
         </Link>
       </section>
     </div>
