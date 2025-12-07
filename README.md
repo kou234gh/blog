@@ -1,32 +1,44 @@
-# Engineering Driven Portfolio & Startup Platform
+# Personal Blog & Portfolio
 
-エンジニアリングを核とした「ものづくり起業」のためのプラットフォーム。
-自身のポートフォリオ、技術ブログ、製品紹介、そして将来的なプロダクト販売を一元管理するためのWebアプリケーションです。
+エンジニアとしての技術ブログ、ポートフォリオ、製品紹介を掲載する個人サイトです。
 
-## 🚀 Concept
+## 🎯 目的
 
-"Engineering as a Product"
+- **技術ブログ**: 学んだ技術や開発の知見を記事として公開
+- **ポートフォリオ**: スキルセットやプロジェクト経験の紹介
+- **製品紹介**: 個人開発したツールやサービスの紹介
+- **収益化**: アフィリエイトや広告、将来的な有料コンテンツ販売の基盤
 
-単なる情報の羅列ではなく、サイトそのものが自身の技術力と拡張性を示すプロダクトであることを目指しています。
-ベンダーロックインを極力排除し、エッジコンピューティングとコンテナ技術を組み合わせた、スケーラブルかつフルコントロール可能な構成を採用しています。
+## 🛠 Tech Stack
 
-## 🛠 Tech Stack Overview
+| Category       | Technology                   | Why?                                   |
+| :------------- | :--------------------------- | :------------------------------------- |
+| **Frontend**   | **React Router v7**          | モダンなSSR対応フレームワーク          |
+| **Deploy**     | **Cloudflare Pages**         | 無料枠で高速配信、帯域幅制限なし       |
+| **UI**         | **Tailwind CSS + Shadcn/ui** | 素早く美しいUIを構築                   |
+| **CMS (将来)** | **Payload CMS** (予定)       | 記事管理を効率化するためのHeadless CMS |
 
-| Category           | Technology                         | Description                                |
-| :----------------- | :--------------------------------- | :----------------------------------------- |
-| **Frontend**       | **React Router v7**                | SSR with Cloudflare Workers runtime        |
-| **Infrastructure** | **Cloudflare Workers/Pages**       | Edge deployment using Workers Functions    |
-| **CMS (Backend)**  | **Payload CMS v3**                 | TypeScript-first, Self-hosted Headless CMS |
-| **Backend Infra**  | **AWS App Runner / GCP Cloud Run** | Containerized hosting for CMS              |
-| **UI / 3D**        | **Tailwind CSS + Shadcn/ui + R3F** | Fully customizable UI & 3D Product View    |
-
-## 📂 Repository Structure (Monorepo)
+## 📂 プロジェクト構成
 
 ```text
 .
-├── apps/
-│   ├── web/        # Frontend (React Router v7 / Cloudflare Pages)
-│   └── cms/        # Backend (Payload CMS / Docker Container)
-├── docs/           # Architecture & Design Documents
-└── package.json
+├── app/
+│   ├── routes/          # ページコンポーネント
+│   ├── components/      # 共通コンポーネント
+│   └── lib/             # ユーティリティ関数
+├── public/              # 静的ファイル
+└── docs/                # 技術ドキュメント
+```
+
+## 🚀 開発
+
+```bash
+# 開発サーバー起動
+npm run dev
+
+# ビルド
+npm run build
+
+# Cloudflareにデプロイ
+npm run deploy
 ```

@@ -1,38 +1,52 @@
-# Technology Decisions
+# 技術選定の理由
 
-本プロジェクトにおける技術選定の背景と「こだわり」について記述します。
+個人ブログサイトでこの技術スタックを選んだ理由をまとめています。
 
-## 1. Cloudflare Workers/Pages + React Router v7 (Frontend)
+## React Router v7
 
-### Why Cloudflare Workers/Pages?
+### 選んだ理由
 
-- **Edge Computing**: ユーザーに近い場所でコードを実行できるため、圧倒的なパフォーマンスを実現できます。
-- **Cost Efficiency**: 帯域幅のコストが無料であり、将来的に画像や3Dモデルなどの大容量アセットを扱う「ものづくり系」サイトにおいて大きなメリットがあります。
-- **Vercelとの比較**: Vercelも優秀ですが、AWS Lambdaベースの従量課金リスクやCold Startを避け、より「Web標準」に近いCloudflare Workers環境を選択しました。
-- **Cloudflare Pages Functions**: Pages上でWorkersランタイムを利用したSSRが可能で、`@react-router/cloudflare`アダプターを使用してデプロイします。
+- **モダンなSSR**: Remix v2の後継で、サーバーサイドレンダリングが標準で使える
+- **学習コスト**: Reactの知識があればすぐに使える
+- **型安全性**: TypeScriptとの相性が良く、ルーティングも型安全
+- **コミュニティ**: React Routerは実績があり、情報が豊富
 
-### Why React Router v7?
+## Cloudflare Pages
 
-- **Remix Philosophy**: Remix v2の後継として、Web標準（Request/Response API）に基づいたデータフェッチングが可能です。
-- **Type Safety**: フロントエンドからバックエンドAPIの型までを一貫して扱うことができ、保守性が向上します。
-- **Cloudflare Workers対応**: `@react-router/cloudflare`パッケージにより、Workersランタイムに最適化されたSSRを実現します。
+### 選んだ理由
 
-## 2. Payload CMS (Backend)
+- **無料枠が優秀**: 個人利用なら基本的に無料で使える
+- **帯域幅無制限**: Vercelのような帯域幅制限がない（画像多めのブログに最適）
+- **高速配信**: エッジネットワークで世界中どこからでも高速アクセス
+- **簡単デプロイ**: GitHubと連携すれば自動デプロイ
+- **Workers統合**: 将来的に高度な機能を追加しやすい
 
-### Why Payload CMS?
+### Vercelと比較して
 
-- **TypeScript First**: 設定ファイルから全てTypeScriptで記述でき、開発体験（DX）が非常に高いです。
-- **No Vendor Lock-in**: SaaS型CMSと異なり、コードとして所有できるため、データの構造や機能を完全にコントロールできます。将来的に独自のEC機能や会員サイト機能を実装する際も、CMS自体を改造可能です。
-- **Headless**: フロントエンドのフレームワークに依存せず、純粋なAPIサーバーとして機能させることができます。
+- Vercelも良いが、無料枠の帯域幅制限（100GB/月）が気になる
+- 画像やアセットが多いブログだと制限に引っかかる可能性がある
+- Cloudflareは帯域幅無制限なので安心
 
-### Why not Next.js for Frontend?
+## Tailwind CSS + Shadcn/ui
 
-- Payload CMS自体は管理画面のためにNext.jsを使用していますが、フロントエンド（ユーザーが見るサイト）までNext.jsに統一する必要はありません。
-- 今回は「エッジでのパフォーマンス」と「Cloudflareへの最適化」を優先し、フロントエンドにはより軽量で柔軟な React Router v7 を採用しました。
+### 選んだ理由
 
-## 3. UI & Design System
+- **高速開発**: ユーティリティクラスで素早くスタイリング
+- **カスタマイズ性**: Shadcn/uiはコンポーネントをコピーして使うので完全にカスタマイズ可能
+- **ライセンス**: MUIなどと違ってライセンスの心配不要
+- **モダンなデザイン**: 今風のUIが簡単に作れる
 
-### Tailwind CSS + Shadcn/ui
+## Payload CMS（将来的に導入予定）
 
-- **Customizability**: コンポーネントライブラリ（MUI等）に依存するのではなく、コードをコピーして所有する Shadcn/ui を採用。
-- これにより、デザインの細部まで完全にコントロールでき、ブランドの個性を表現する「ものづくり」に適したUIを構築できます。
+### 検討している理由
+
+- **記事管理の効率化**: 現在はコード内にデータを書いているが、CMSで管理したい
+- **TypeScript対応**: 型安全に記事データを扱える
+- **無料でセルフホスト**: SaaS型CMS（MicroCMS等）と違って月額料金がかからない
+- **柔軟性**: 将来的に会員機能や有料コンテンツ販売も追加できる
+
+### まだ導入していない理由
+
+- まずは記事を書くことに集中したい
+- CMSのホスティングにコストがかかる（AWS/GCPの無料枠で試す予定）
+- 記事が増えてから導入しても遅くない

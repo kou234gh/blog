@@ -1,68 +1,52 @@
-# Development & Security Guide
+# 開発ガイド
 
-ローカル開発環境のセットアップと、Publicリポジトリにおけるセキュリティ運用ルールについて。
+ローカル開発環境のセットアップ方法です。
 
-## 🛠 Local Setup
+## セットアップ
 
-### Prerequisites
+### 必要なもの
 
 - Node.js (v20+)
-- Docker (for local DB testing)
-- pnpm or npm
+- npm
 
-### Installation
+### インストール
 
 ```bash
-# Clone repository
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+# リポジトリをクローン
+git clone https://github.com/kou234gh/blog.git
+cd blog
 
-# Install dependencies (Root)
+# 依存関係をインストール
 npm install
 ```
 
 ````
 
-### Environment Variables (.env)
+### 環境変数
 
-**⚠️ 重要: `.env` ファイルは `.gitignore` に含まれており、GitHubにはアップロードされません。**
-開発者は以下のひな形を元に、ローカル用の `.env` を作成する必要があります。
+現在は環境変数は不要です。将来的にCMSを導入する際に必要になります。
 
-**apps/web/.env**
-
-```env
-# CMSのAPIエンドポイント
-VITE_API_URL=http://localhost:3000
-```
-
-**apps/cms/.env**
-
-```env
-# データベース接続文字列
-DATABASE_URI=mongodb://127.0.0.1/your-db
-# Payloadのシークレットキー (ランダムな文字列)
-PAYLOAD_SECRET=YOUR_SECRET_KEY
-```
-
-### Run Locally
+### 開発サーバーを起動
 
 ```bash
-# Run both Frontend and Backend concurrently (if configured in package.json)
 npm run dev
-
-# Or run individually
-cd apps/cms && npm run dev
-cd apps/web && npm run dev
 ```
 
-## 🔐 Security Policy for Public Repository
+ブラウザで `http://localhost:5173` にアクセス
 
-本リポジトリはポートフォリオとして **Public** 公開されていますが、セキュリティを担保するために以下のルールを厳格に運用しています。
+## セキュリティ
 
-1. **No Secrets in Code**: APIキー、DBパスワード、アクセストークンなどの機密情報は、**絶対にコード内にハードコーディングしません**。
-2. **Environment Variables**: 全ての機密情報は環境変数（`.env`）を通じて注入されます。
-3. **Review Process**: 誤って機密情報をコミットしないよう、プッシュ前のセルフレビューを徹底します。
-4. **Gitignore**: `.env`, `.DS_Store`, `node_modules` などのファイルが確実に除外されていることを確認しています。
+このリポジトリは **Public** で公開されています。
 
-万が一、機密情報が含まれるコミットを行ってしまった場合は、即座に該当のクレデンシャルを無効化し、Gitの履歴から抹消（BFG Repo-Cleaner等を使用）する手順を踏みます。
+### 注意事項
+
+- APIキーやパスワードは絶対にコミットしない
+- 機密情報は`.env`ファイルに記述（`.gitignore`で除外済み）
+- 個人情報は含めない
+
+### もし誤ってコミットしてしまったら
+
+1. すぐにそのAPIキー等を無効化する
+2. Git履歴から削除する
+3. 新しいキーを発行する
 ````

@@ -1,62 +1,61 @@
-# System Architecture
+# サイト構成
 
-本プロジェクトは、フロントエンド（Web）とバックエンド（CMS）を完全に分離した **Headless Architecture** を採用しています。
+現在はシンプルなフロントエンドのみの構成です。将来的にCMSを導入する予定があります。
 
-## 🧩 Architecture Diagram
+## 現在の構成
 
 ```mermaid
-graph TD
-    subgraph "Frontend (Edge)"
-        CF[Cloudflare Workers/Pages]
-        RR[React Router v7 App]
-        CF --> RR
-    end
-
-    subgraph "Backend (Container)"
-        Cloud[AWS App Runner / GCP Cloud Run]
-        Payload[Payload CMS v3]
-        DB[(MongoDB / Postgres)]
-
-        Cloud --> Payload
-        Payload --> DB
-    end
-
-    subgraph "Client"
-        Browser[User Browser]
-    end
-
-    Browser -- HTTPS (HTML/Assets) --> CF
-    Browser -- API (Data Fetching) --> Cloud
-    RR -- API (SSR/Loader) --> Cloud
+graph LR
+    Browser[ブラウザ] --> CF[Cloudflare Pages]
+    CF --> RR[React Router v7]
+    RR --> Data[静的データ]
 ```
 
-## 🏗 Component Roles
+## 将来的な構成（CMS導入後）
 
-### 1. Frontend: `apps/web`
+```mermaid
+graph LR
+    Browser[ブラウザ] --> CF[Cloudflare Pages]
+    CF --> RR[React Router v7]
+    RR --> API[Payload CMS API]
+    API --> DB[(Database)]
+```
 
-- **Role**: ユーザーインターフェース、3Dモデルのレンダリング、ルーティング。
-- **Framework**: React Router v7 (Framework Mode)
-- **Deployment**: Cloudflare Workers/Pages (Pages Functions)
-- **Runtime**: Cloudflare Workers (using `@react-router/cloudflare` adapter)
-- **Mechanism**:
-  - `loader` 関数を使用し、サーバーサイド（Edge）でCMSからデータを取得。
-  - Cloudflareのエッジネットワークを活用し、低遅延でコンテンツを配信。
-  - React Three Fiber (R3F) を用いたインタラクティブな製品デモの実装。
+## 各部分の役割
 
-### 2. Backend / CMS: `apps/cms`
+### フロントエンド（現在）
 
-- **Role**: コンテンツ管理、API提供、将来的なユーザー認証・決済処理の基盤。
-- **Framework**: Payload CMS v3 (Running on Node.js/Next.js adapter)
-- **Deployment**: Docker Container (AWS App Runner or GCP Cloud Run)
-- **Database**: MongoDB Atlas or Managed Postgres
-- **Why Separate?**:
-  - フロントエンドの技術（Cloudflare/React）に依存せず、データを永続化するため。
-  - SaaS型CMS（MicroCMS等）の制限を受けず、バックエンドロジック（Stripe連携など）を自由に拡張するため。
+- **フレームワーク**: React Router v7
+- **デプロイ**: Cloudflare Pages
+- **スタイリング**: Tailwind CSS + Shadcn/ui
+- **データ**: コード内に直接記述（仮データ）
 
-## 🚀 Deployment Strategy
+現在は記事データをコード内に書いています。記事が増えてきたらCMSの導入を検討します。
 
-GitHub Actions (または各プラットフォームのGit連携) を利用したCI/CDを構築。
+### バックエンド（将来的に導入予定）
 
-1. **Frontend**: `main` ブランチへのプッシュをトリガーに Cloudflare Workers/Pages がビルド・デプロイ。
-   - `wrangler pages deploy` を使用してCloudflare Workersランタイム上でSSRを実行。
-2. **Backend**: `main` ブランチへのプッシュをトリガーに Dockerイメージを作成し、コンテナ環境へデプロイ。
+- **CMS**: Payload CMS v3
+- **デプロイ**: AWS App Runner / GCP Cloud Run（無料枠を活用）
+- **データベース**: MongoDB Atlas（無料枠）
+
+### なぜ最初からCMSを入れないのか？
+
+1. **コストを抑えたい**: CMSのホスティングには月額費用がかかる可能性がある
+2. **シンプルに始めたい**: まずは記事を書くことに集中
+3. **必要になってから**: 記事が10-20本溜まってから導入しても遅くない
+
+## デプロイ方法
+
+### 現在の方法
+
+1. GitHubにプッシュ
+2. Cloudflare PagesがGitHub連携で自動ビルド・デプロイ
+3. 完了（特に設定不要）
+
+### ローカルでのデプロイ
+
+```bash
+npm run deploy
+```
+
+これで`wrangler`を使ってCloudflare Pagesにデプロイできます。
