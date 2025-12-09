@@ -1,7 +1,7 @@
-import type { Route } from "./+types/about";
+import type { MetaArgs } from "react-router";
 import { Link } from "react-router";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({}: MetaArgs) {
   return [
     { title: "About - Engineering Portfolio" },
     {

@@ -1,7 +1,7 @@
-import type { Route } from "./+types/index";
-import { Link } from "react-router";
+import type { ComponentProps } from "react";
+import { Link, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({}: MetaArgs) {
   return [
     { title: "技術ブログ - Engineering Portfolio" },
     {
@@ -12,7 +12,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 // TODO: Payload CMSからデータを取得
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   // 仮データ - 将来的にはPayload CMS APIから取得
   const posts = [
     {
@@ -36,7 +36,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { posts };
 }
 
-export default function BlogIndex({ loaderData }: Route.ComponentProps) {
+export default function BlogIndex({ loaderData }: ComponentProps<any>) {
   const { posts } = loaderData;
 
   return (
@@ -48,7 +48,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
         </p>
 
         <div className="space-y-8">
-          {posts.map((post) => (
+          {posts.map((post: any) => (
             <article
               key={post.slug}
               className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
@@ -68,7 +68,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                   })}
                 </time>
                 <div className="flex gap-2">
-                  {post.tags.map((tag) => (
+                  {post.tags.map((tag: any) => (
                     <span
                       key={tag}
                       className="px-3 py-1 bg-gray-100  rounded-full text-xs"

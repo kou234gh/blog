@@ -1,6 +1,8 @@
-import type { Route } from "./+types/products";
+import type { ComponentProps } from "react";
+import type { LoaderFunctionArgs } from "react-router";
+import type { MetaArgs } from "react-router";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({}: MetaArgs) {
   return [
     { title: "製品紹介 - Engineering Portfolio" },
     { name: "description", content: "個人開発したツールやサービスの紹介" },
@@ -40,11 +42,11 @@ const mockProducts = [
 ];
 
 // TODO: Payload CMSから製品データを取得
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   return { mockProducts };
 }
 
-export default function Products({ loaderData }: Route.ComponentProps) {
+export default function Products({ loaderData }: ComponentProps<any>) {
   // const { mockProducts } = loaderData;
 
   return (

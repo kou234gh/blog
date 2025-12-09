@@ -1,7 +1,8 @@
-import type { Route } from "./+types/$slug";
-import { Link } from "react-router";
+import type { ComponentProps } from "react";
+import type { MetaArgs } from "react-router";
+import { Link, type LoaderFunctionArgs } from "react-router";
 
-export function meta({ params }: Route.MetaArgs) {
+export function meta({ params }: MetaArgs) {
   return [
     { title: `${params.slug} - 技術ブログ` },
     { name: "description", content: "ブログ記事の詳細" },
@@ -9,8 +10,11 @@ export function meta({ params }: Route.MetaArgs) {
 }
 
 // TODO: Payload CMSから記事データを取得
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const { slug } = params;
+  if (!slug) {
+    throw new Response("Not Found", { status: 404 });
+  }
 
   // 仮データ - 将来的にはPayload CMS APIから取得
   const posts: Record<string, any> = {
@@ -110,7 +114,7 @@ Payload CMSは、開発者ファーストな設計で、柔軟性の高いCMSを
   return { post, slug };
 }
 
-export default function BlogPost({ loaderData }: Route.ComponentProps) {
+export default function BlogPost({ loaderData }: ComponentProps<any>) {
   const { post, slug } = loaderData as any;
 
   return (

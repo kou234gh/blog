@@ -1,8 +1,7 @@
 import { Button } from "~/components/ui/button";
-import type { Route } from "./+types/home";
-import { Link } from "react-router";
+import { Link, type MetaArgs } from "react-router";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({}: MetaArgs) {
   return [
     { title: "Engineering Portfolio - ものづくり起業プラットフォーム" },
     {
