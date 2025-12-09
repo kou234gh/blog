@@ -16,6 +16,7 @@
     "deploy:web": "npm run deploy --workspace=apps/web"
   },
   "devDependencies": {
-    "concurrently": "^8.0.0"
+    "concurrently": "^8.0.0",
+    "turbo": "^2.6.3"
   }
 }
