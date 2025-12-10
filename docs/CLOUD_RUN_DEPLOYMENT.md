@@ -209,10 +209,15 @@ GitHub Actions が自動的に以下を実行します:
 
 ### 方法 B: ローカルから手動デプロイ
 
+#### オプション 1: Docker CLI を使用（推奨）
+
 ```bash
 # 認証
 gcloud auth login
 gcloud config set project blog-cms-project
+
+# Dockerの認証設定
+gcloud auth configure-docker
 
 # モノレポのルートディレクトリから実行
 docker build -f apps/cms/Dockerfile -t gcr.io/blog-cms-project/blog-cms:latest .
@@ -234,6 +239,66 @@ gcloud run deploy blog-cms \
   --max-instances 10 \
   --port 8080
 ```
+
+#### オプション 2: Cloud Build を使用
+
+Cloud Build を使う場合は、`cloudbuild.yaml` を作成する必要があります。
+
+`apps/cms/cloudbuild.yaml` を作成:
+
+```yaml
+steps:
+  # Docker イメージをビルド
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'apps/cms/Dockerfile'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/blog-cms:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/blog-cms:latest'
+      - '.'
+    
+  # イメージをプッシュ
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/blog-cms:$COMMIT_SHA'
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/blog-cms:latest'
+
+  # Cloud Run にデプロイ
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'blog-cms'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/blog-cms:$COMMIT_SHA'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - 'asia-northeast1'
+      - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/blog-cms:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/blog-cms:latest'
+```
+
+その後、以下のコマンドで実行:
+
+```bash
+# モノレポのルートディレクトリから実行
+gcloud builds submit --config=apps/cms/cloudbuild.yaml .
+```
+
+**重要:** ビルドコンテキストは `.`（リポジトリルート）にする必要があります。
 
 ---
 
@@ -274,6 +339,39 @@ VITE_API_URL=https://blog-cms-xyz-an.a.run.app
 ---
 
 ## トラブルシューティング
+
+### `COPY failed: file not found` エラーが発生する場合
+
+**エラー例:**
+
+```text
+COPY failed: file not found in build context or excluded by .dockerignore: 
+stat pnpm-workspace.yaml: file does not exist
+```
+
+**原因:** ビルドコンテキストが間違っています。`apps/cms` ディレクトリではなく、**リポジトリルート**から実行する必要があります。
+
+**修正方法:**
+
+```bash
+# ❌ 間違い
+cd apps/cms
+docker build -t gcr.io/PROJECT_ID/blog-cms .
+
+# ✅ 正解（リポジトリルートから実行）
+docker build -f apps/cms/Dockerfile -t gcr.io/PROJECT_ID/blog-cms .
+```
+
+`gcloud builds submit` を使う場合も同様:
+
+```bash
+# ❌ 間違い
+cd apps/cms
+gcloud builds submit --tag gcr.io/PROJECT_ID/blog-cms
+
+# ✅ 正解（リポジトリルートから実行）
+gcloud builds submit --config=apps/cms/cloudbuild.yaml .
+```
 
 ### ビルドエラーが発生する場合
 
