@@ -10,13 +10,13 @@ steps:
       - '-t'
       - 'gcr.io/$PROJECT_ID/blog-cms:latest'
       - '.'
-    
+
   # イメージをプッシュ（SHA版）
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'gcr.io/$PROJECT_ID/blog-cms:$COMMIT_SHA'
-  
+
   # イメージをプッシュ（latest版）
   - name: 'gcr.io/cloud-builders/docker'
     args:
