@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - "apps/cms/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/deploy-cms.yml"
 
 env:
@@ -39,10 +41,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cd apps/cms
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
-          docker tag gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
-                     gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
+          # モノレポのルートディレクトリからビルド（Dockerfileがapps/cmsを参照するため）
+          docker build \
+            -f apps/cms/Dockerfile \
+            -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest \
+            .
 
       - name: Push Docker image to GCR
         run: |
