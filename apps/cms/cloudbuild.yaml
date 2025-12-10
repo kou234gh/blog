@@ -1,3 +1,5 @@
+# google cloud runで使用する。
+
 steps:
   # Docker イメージをビルド（モノレポのルートから）
   - name: 'gcr.io/cloud-builders/docker'
