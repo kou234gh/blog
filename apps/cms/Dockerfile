@@ -61,7 +61,9 @@ COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/public ./public
 
 # standalone出力をコピー
 COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/static ./.next/static
+
+# static ファイルは standalone に含まれないため、別途コピーが必要
+COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/static ./apps/cms/.next/static
 
 USER nextjs
 
@@ -72,4 +74,5 @@ ENV PORT=8080
 ENV HOSTNAME="0.0.0.0"
 
 # server.js is created by next build from the standalone output
+# モノレポ構成の場合、server.js は apps/cms/ 内に生成される
 CMD ["node", "apps/cms/server.js"]
