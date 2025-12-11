@@ -25,7 +25,7 @@ Frontend（Cloudflare）は、インターネット越しに Backend（Cloud Run
 
 ## 2. フォルダ構成 (Monorepo への移行)
 
-現在の単一プロジェクト構成から、`npm workspaces` を使ったモノレポに移行します。
+現在の単一プロジェクト構成から、`pnpm workspaces` を使ったモノレポに移行します。
 
 **移行後の構成:**
 
@@ -71,13 +71,13 @@ git commit -m "feat: モノレポ移行前のバックアップ"
   "private": true,
   "workspaces": ["apps/*"],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace=apps/web\" \"npm run dev --workspace=apps/cms\"",
-    "dev:web": "npm run dev --workspace=apps/web",
-    "dev:cms": "npm run dev --workspace=apps/cms",
-    "build": "npm run build --workspaces",
-    "build:web": "npm run build --workspace=apps/web",
-    "build:cms": "npm run build --workspace=apps/cms",
-    "deploy:web": "npm run deploy --workspace=apps/web"
+    "dev": "concurrently \"pnpm run dev --workspace=apps/web\" \"pnpm run dev --workspace=apps/cms\"",
+    "dev:web": "pnpm run dev --workspace=apps/web",
+    "dev:cms": "pnpm run dev --workspace=apps/cms",
+    "build": "pnpm run build --workspaces",
+    "build:web": "pnpm run build --workspace=apps/web",
+    "build:cms": "pnpm run build --workspace=apps/cms",
+    "deploy:web": "pnpm run deploy --workspace=apps/web"
   },
   "devDependencies": {
     "concurrently": "^8.0.0"
@@ -85,7 +85,7 @@ git commit -m "feat: モノレポ移行前のバックアップ"
 }
 ```
 
-**重要:** `concurrently` を使うと、`npm run dev` 一発で Web と CMS の両方をローカルで同時に立ち上げられます。
+**重要:** `concurrently` を使うと、`pnpm run dev` 一発で Web と CMS の両方をローカルで同時に立ち上げられます。
 
 ### Step 3: 既存プロジェクトを `apps/web` に移動
 
@@ -123,11 +123,11 @@ cp package.json apps/web/package.json
   "scripts": {
     "build": "react-router build",
     "cf-typegen": "wrangler types",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "pnpm run build && wrangler deploy",
     "dev": "react-router dev",
-    "postinstall": "npm run cf-typegen",
-    "preview": "npm run build && vite preview",
-    "typecheck": "npm run cf-typegen && react-router typegen && tsc -b"
+    "postinstall": "pnpm run cf-typegen",
+    "preview": "pnpm run build && vite preview",
+    "typecheck": "pnpm run cf-typegen && react-router typegen && tsc -b"
   },
   "dependencies": {
     // ... 既存の依存関係をそのまま
@@ -343,10 +343,10 @@ Cloudflare のダッシュボードでプロジェクト設定を変更します
 
 **ビルド設定:**
 
-- **Build command:** `npm run build:web`
+- **Build command:** `pnpm run build:web`
 - **Build output directory:** `apps/web/build/client`
 - **Root directory:** `/` (リポジトリルート)
-- **Install command:** `npm install`
+- **Install command:** `pnpm install`
 
 **重要:** モノレポ構成なので、Root directory は `/` のままにし、build command でワークスペースを指定します。
 
@@ -412,14 +412,14 @@ FROM node:20-alpine AS base
 FROM base AS dependencies
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN pnpm ci
 
 # ビルド
 FROM base AS build
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # 本番環境
 FROM base AS production
@@ -432,7 +432,7 @@ COPY package*.json ./
 ENV NODE_ENV=production
 EXPOSE 3000
 
-CMD ["npm", "run", "serve"]
+CMD ["pnpm", "run", "serve"]
 ```
 
 ---
@@ -484,7 +484,7 @@ Google Cloud SQL または他のマネージド PostgreSQL を使用します。
 
 ```bash
 # ルートディレクトリから
-npm install
+pnpm install
 
 # CMS用のデータベースを起動
 cd apps/cms
@@ -492,7 +492,7 @@ docker-compose up -d
 
 # 両方同時に起動
 cd ../..
-npm run dev
+pnpm run dev
 ```
 
 これで以下が起動します:
