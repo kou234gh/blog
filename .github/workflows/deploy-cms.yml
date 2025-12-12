@@ -36,8 +36,9 @@ jobs:
         id: auth
         uses: "google-github-actions/auth@v2"
         with:
-          workload_identity_provider: "projects/860929020350/locations/global/workloadIdentityPools/github-pool/providers/github-provider-752634856723745" # ◀ GCPで設定したWIFプロバイダ
+          workload_identity_provider: "projects/860929020350/locations/global/workloadIdentityPools/github-pool/providers/github-provider-752634856723745"
           service_account: "github-actions@my-blog-480718.iam.gserviceaccount.com"
+          token_format: "access_token" # ★この1行を追加！
 
       # --- Dockerビルド & プッシュ ---
       # GitHub ActionsのVM上でDockerコマンドを直接実行します
