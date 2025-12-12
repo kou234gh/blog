@@ -18,8 +18,5 @@
   "devDependencies": {
     "concurrently": "^8.0.0",
     "turbo": "^2.6.3"
-  },
-  "dependencies": {
-    "@payloadcms/db-postgres": "^3.67.0"
   }
 }

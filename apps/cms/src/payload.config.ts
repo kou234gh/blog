@@ -1,4 +1,4 @@
-import { postgresAdapter } from '@payloadcms/db-postgres';
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -7,28 +7,42 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Posts } from './collections/Posts'
+import { gcsStorage } from '@payloadcms/storage-gcs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-    admin: {
-        user: Users.slug,
-        importMap: {
-            baseDir: path.resolve(dirname),
-        },
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
     },
-    collections: [Users, Media],
-    editor: lexicalEditor(),
-    secret: process.env.PAYLOAD_SECRET || '',
-    typescript: {
-        outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+  collections: [Users, Media, Posts],
+  editor: lexicalEditor(),
+  secret: process.env.PAYLOAD_SECRET || '',
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI || '',
     },
-    db: postgresAdapter({
-        pool: {
-            connectionString: process.env.DATABASE_URI || '',
-        },
+  }),
+  sharp,
+  plugins: [
+    gcsStorage({
+      collections: {
+        media: true,
+        // 'media-with-prefix': { prefix: 'uploads/prefix-example/' },
+      },
+      bucket: process.env.GCS_BUCKET_NAME || '',
+      options: {
+        // apiEndpoint: process.env.GCS_ENDPOINT,
+        projectId: process.env.GC_PROJECT_ID,
+      },
     }),
-    sharp,
-    plugins: [],
+  ],
 })
