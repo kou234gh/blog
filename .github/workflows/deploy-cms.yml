@@ -36,7 +36,7 @@ jobs:
         id: auth
         uses: "google-github-actions/auth@v2"
         with:
-          workload_identity_provider: "projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider" # ◀ GCPで設定したWIFプロバイダ
+          workload_identity_provider: "projects/860929020350/locations/global/workloadIdentityPools/github-pool/subject/SUBJECT_ATTRIBUTE_VALUE" # ◀ GCPで設定したWIFプロバイダ
           service_account: "github-actions@my-blog-480718.iam.gserviceaccount.com" # ◀ GCPで作成したサービスアカウント
 
       # --- Dockerビルド & プッシュ ---
