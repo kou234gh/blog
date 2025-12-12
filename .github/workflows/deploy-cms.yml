@@ -70,7 +70,6 @@ jobs:
           region: ${{ env.REGION }}
           # 直前のステップでプッシュしたイメージを指定
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          # ↓↓↓ ここの設定が重要 ↓↓↓
           flags: >-
             --port=3000
             --allow-unauthenticated
