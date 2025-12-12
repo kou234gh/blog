@@ -60,7 +60,10 @@ RUN adduser --system --uid 1001 nextjs
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/static ./apps/cms/.next/static
-COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/public ./apps/cms/public
+
+# publicディレクトリが存在する場合のみコピー（存在しなくてもエラーにしない）
+# ローカルでpublicディレクトリを作成するか、不要であればこの行を削除してください
+COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/public ./apps/cms/public 2>/dev/null || true
 
 USER nextjs
 
