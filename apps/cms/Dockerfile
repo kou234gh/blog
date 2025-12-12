@@ -63,7 +63,7 @@ COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/static ./apps
 
 # publicディレクトリが存在する場合のみコピー（存在しなくてもエラーにしない）
 # ローカルでpublicディレクトリを作成するか、不要であればこの行を削除してください
-COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/public ./apps/cms/public 2>/dev/null || true
+# COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/public ./apps/cms/public 2>/dev/null || true
 
 USER nextjs
 
