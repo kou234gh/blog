@@ -78,9 +78,9 @@ jobs:
             --execute-now \
             --wait \
             --args=sh,-c,"cd /app/apps/cms && node .next/standalone/apps/cms/node_modules/payload/dist/bin/index.js migrate"
-          
+
           MIGRATION_EXIT_CODE=$?
-          
+
           # 実行結果の詳細ログを取得
           echo "=== Fetching migration logs ==="
           gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }}" \
@@ -95,13 +95,13 @@ jobs:
             --region=${{ env.REGION }} \
             --quiet \
             || true
-          
+
           # マイグレーションが失敗していたら終了
           if [ $MIGRATION_EXIT_CODE -ne 0 ]; then
             echo "❌ Migration failed with exit code $MIGRATION_EXIT_CODE"
             exit 1
           fi
-          
+
           echo "✅ Migration completed successfully"
 
       # --- Cloud Runへのデプロイ ---
