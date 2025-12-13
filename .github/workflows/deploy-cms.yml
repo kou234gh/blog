@@ -86,7 +86,7 @@ jobs:
 
           # 実行結果の詳細ログを取得（すべて）
           echo "=== Fetching migration logs (stdout) ==="
-          gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }} AND logName=~stdout" \
+          gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }} AND logName:stdout" \
             --limit=200 \
             --format="table(timestamp,textPayload)" \
             --freshness=10m \
@@ -94,7 +94,7 @@ jobs:
 
           echo ""
           echo "=== Fetching migration logs (stderr) ==="
-          gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }} AND logName=~stderr" \
+          gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }} AND logName:stderr" \
             --limit=200 \
             --format="table(timestamp,textPayload)" \
             --freshness=10m \
