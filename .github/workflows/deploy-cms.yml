@@ -78,8 +78,8 @@ jobs:
             --task-timeout=10m \
             --execute-now \
             --wait \
-            --command=node \
-            --args=.next/standalone/apps/cms/node_modules/payload/dist/bin/index.js,migrate
+            --command=sh \
+            --args=-c,"PAYLOAD_BIN=/app/node_modules/payload/dist/bin/index.js; if [ ! -f \$PAYLOAD_BIN ]; then PAYLOAD_BIN=/app/apps/cms/node_modules/payload/dist/bin/index.js; fi; echo Using Payload at \$PAYLOAD_BIN; cd /app/apps/cms && node \$PAYLOAD_BIN migrate"
 
           MIGRATION_EXIT_CODE=$?
           set -e
