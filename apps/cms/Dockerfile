@@ -53,6 +53,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# pnpm を有効化（マイグレーション実行用）
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -60,6 +63,12 @@ RUN adduser --system --uid 1001 nextjs
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/.next/static ./apps/cms/.next/static
+
+# マイグレーションファイルとPayload設定をコピー
+COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/src/migrations ./apps/cms/src/migrations
+COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/src/payload.config.ts ./apps/cms/src/payload.config.ts
+COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/src/collections ./apps/cms/src/collections
+COPY --from=builder --chown=nextjs:nodejs /monorepo/apps/cms/package.json ./apps/cms/package.json
 
 # publicディレクトリが存在する場合のみコピー（存在しなくてもエラーにしない）
 # ローカルでpublicディレクトリを作成するか、不要であればこの行を削除してください

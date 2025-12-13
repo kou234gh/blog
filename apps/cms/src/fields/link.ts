@@ -136,10 +136,13 @@ const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = 
       appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])
     }
 
+    // デフォルト値は使用可能なオプションの最初の値を使用
+    const defaultAppearance = appearanceOptionsToUse[0]?.value || 'default'
+
     linkResult.fields.push({
       name: 'appearance',
       type: 'select',
-      defaultValue: 'default',
+      defaultValue: defaultAppearance,
       options: appearanceOptionsToUse,
       admin: {
         description: 'Choose how the link should be rendered.',
