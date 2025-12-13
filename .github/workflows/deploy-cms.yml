@@ -67,6 +67,7 @@ jobs:
         run: |
           # マイグレーションジョブを作成して実行
           echo "Creating and executing migration job..."
+          set +e  # エラーでも継続
           gcloud run jobs create migrate-cms-${{ github.sha }} \
             --region=${{ env.REGION }} \
             --image=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
@@ -77,19 +78,30 @@ jobs:
             --task-timeout=10m \
             --execute-now \
             --wait \
-            --args=sh,-c,"cd /app/apps/cms && node .next/standalone/apps/cms/node_modules/payload/dist/bin/index.js migrate"
+            --command=node \
+            --args=.next/standalone/apps/cms/node_modules/payload/dist/bin/index.js,migrate
 
           MIGRATION_EXIT_CODE=$?
+          set -e
 
-          # 実行結果の詳細ログを取得
-          echo "=== Fetching migration logs ==="
-          gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }}" \
-            --limit=100 \
+          # 実行結果の詳細ログを取得（すべて）
+          echo "=== Fetching migration logs (stdout) ==="
+          gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }} AND logName=~stdout" \
+            --limit=200 \
             --format="table(timestamp,textPayload)" \
-            --freshness=5m \
-            || echo "Could not fetch logs"
+            --freshness=10m \
+            || echo "No stdout logs found"
+
+          echo ""
+          echo "=== Fetching migration logs (stderr) ==="
+          gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }} AND logName=~stderr" \
+            --limit=200 \
+            --format="table(timestamp,textPayload)" \
+            --freshness=10m \
+            || echo "No stderr logs found"
 
           # ジョブを削除（クリーンアップ）
+          echo ""
           echo "Cleaning up migration job..."
           gcloud run jobs delete migrate-cms-${{ github.sha }} \
             --region=${{ env.REGION }} \
@@ -98,10 +110,12 @@ jobs:
 
           # マイグレーションが失敗していたら終了
           if [ $MIGRATION_EXIT_CODE -ne 0 ]; then
+            echo ""
             echo "❌ Migration failed with exit code $MIGRATION_EXIT_CODE"
             exit 1
           fi
 
+          echo ""
           echo "✅ Migration completed successfully"
 
       # --- Cloud Runへのデプロイ ---
