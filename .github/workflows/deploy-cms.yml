@@ -65,24 +65,36 @@ jobs:
       # --- データベースマイグレーションの実行 ---
       - name: Run database migrations
         run: |
+          # マイグレーションジョブを作成
           gcloud run jobs create migrate-cms-${{ github.sha }} \
             --region=${{ env.REGION }} \
             --image=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             --set-secrets=DATABASE_URI=blog-cms-database-uri:latest,PAYLOAD_SECRET=blog-cms-payload-secret:latest \
-            --memory=512Mi \
+            --memory=1Gi \
             --cpu=1 \
             --max-retries=0 \
             --task-timeout=10m \
-            --command=pnpm \
-            --args=payload,migrate \
-            || true
+            --execute-now \
+            --wait \
+            --args=sh,-c,"cd /app/apps/cms && corepack enable && pnpm payload migrate" \
+            || echo "Migration job creation or execution failed"
 
-          # マイグレーションジョブを実行
-          gcloud run jobs execute migrate-cms-${{ github.sha }} \
+          # 実行結果の詳細を取得
+          EXECUTION_NAME=$(gcloud run jobs executions list \
+            --job=migrate-cms-${{ github.sha }} \
             --region=${{ env.REGION }} \
-            --wait
+            --limit=1 \
+            --format="value(name)")
 
-          # 実行後にジョブを削除（クリーンアップ）
+          if [ -n "$EXECUTION_NAME" ]; then
+            echo "=== Migration execution logs ==="
+            gcloud logging read "resource.type=cloud_run_job AND resource.labels.job_name=migrate-cms-${{ github.sha }}" \
+              --limit=50 \
+              --format=json \
+              || echo "Could not fetch logs"
+          fi
+
+          # ジョブを削除（クリーンアップ）
           gcloud run jobs delete migrate-cms-${{ github.sha }} \
             --region=${{ env.REGION }} \
             --quiet \
