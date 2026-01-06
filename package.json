@@ -1,0 +1,22 @@
+{
+  "name": "blog",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=apps/web\" \"npm run dev --workspace=apps/cms\"",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:cms": "npm run dev --workspace=apps/cms",
+    "build": "npm run build --workspaces",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:cms": "npm run build --workspace=apps/cms",
+    "tsc:cms": "tsc -b apps/cms/tsconfig.json",
+    "tsc:web": "tsc -b apps/web/tsconfig.json",
+    "deploy:web": "npm run deploy --workspace=apps/web"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0",
+    "turbo": "^2.6.3"
+  }
+}
