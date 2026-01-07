@@ -8,9 +8,9 @@
   "compatibility_date": "2025-04-04",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./workers/app.ts",
-  "vars": {
-    "VALUE_FROM_CLOUDFLARE": "Hello e"
-  },
+  // "vars": {
+  //   "VALUE_FROM_CLOUDFLARE": "Hello e"
+  // },
   "observability": {
     "enabled": true
   }
