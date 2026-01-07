@@ -54,7 +54,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow">
+        {/* <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow">
           <h3 className="text-2xl font-bold mb-3 ">製品紹介</h3>
           <p className=" mb-4">...soon</p>
 
@@ -63,7 +63,7 @@ export default function Home() {
               製品を見る →
             </Button>
           </Link>
-        </div>
+        </div> */}
 
         <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow">
           <h3 className="text-2xl font-bold mb-3 ">ポートフォリオ</h3>

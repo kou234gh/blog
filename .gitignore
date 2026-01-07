@@ -9,11 +9,21 @@ apps/cms/node_modules/
 /.react-router/
 /build/
 
-# Cloudflare
-.mf
-.wrangler
-.dev.vars*
-worker-configuration.d.ts
+# Cloudflare / Wrangler
+# ローカル開発用の環境変数ファイル
+.dev.vars
+apps/web/.dev.vars
+
+# Wranglerが生成する一時ディレクトリ
+.wrangler/
+apps/web/.wrangler/
+
+# ビルド成果物
+apps/web/build/
+apps/web/dist/
+
+# wrangler types で生成される型定義ファイル
+apps/web/worker-configuration.d.ts
 
 
 !.dev.vars.example
